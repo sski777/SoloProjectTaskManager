@@ -11,6 +11,11 @@ function FavoriteTask(){
   let [countfavorites, setCountFavorites] = useState(0)
   let [countnotfavorites, setCountNotFavorites] = useState(0)
   let [alert, setAlert] = useState(null)
+  let [countpending, setCountPending] = useState(0)
+  let [countcompleted, setCountCompleted] = useState(0)
+  let [countlowpriority, setLowPriority] = useState(0)
+  let [countmediumpriority, setCountMediumPriority] = useState(0)
+  let [counthighpriority, setCountPriorityHigh] = useState(0)
 
   useEffect(() => {
     const options = {
@@ -65,8 +70,37 @@ function FavoriteTask(){
           countnotfavoritesee++
         }
       }
-      setCountFavorites(countfavoritessee)
-      setCountNotFavorites(countnotfavoritesee)
+      let countcompletedsee = 0
+      let countnotcompletedsee = 0
+      for (let i = 0; i < data.length; i++){
+        let variable = data[i]
+        if (variable.completed===true){
+          countcompletedsee++
+        }
+        else if (variable.completed===false){
+          countnotcompletedsee++
+        }
+      }
+      setCountCompleted(countcompletedsee)
+      setCountPending(countnotcompletedsee)
+      let countlowprioritysee = 0
+      let countmediumprioritysee = 0
+      let counthighprioritysee = 0
+      for (let i = 0; i < data.length; i++){
+        let variable = data[i]
+        if (variable.priority==='high'){
+          counthighprioritysee++
+        }
+        else if (variable.priority==='medium'){
+          countmediumprioritysee++
+        }
+        else if (variable.priority==='low'){
+          countlowprioritysee++
+        }
+      }
+      setCountPriorityHigh(counthighprioritysee)
+      setCountMediumPriority(countmediumprioritysee)
+      setLowPriority(countlowprioritysee)
      })
      .catch(error => {
        setError(error.message)
@@ -149,6 +183,17 @@ function FavoriteTask(){
     })
     .then(data => { 
       setFavoriteTasksArray(data)
+      let countcompletedsee = 0
+      let countnotcompletedsee = 0
+      for (let i = 0; i < data.length; i++){
+        let variable = data[i]
+        if (variable.completed===true){
+          countcompletedsee++
+        }
+        else if (variable.completed===false){
+          countnotcompletedsee++
+        }
+      }
     })
     .catch(error => {
       setError(error.message)
@@ -158,28 +203,6 @@ function FavoriteTask(){
     })
   }
 
-  function MoveTaskToTopFavoriteList(index){
-    const options = {
-      method: 'GET'
-    }
-    console.log(index)
-    fetch(ROOTURL+'/setallfavorites/:'+index, options)
-    .then(response => {
-      if (!response.ok){
-        throw new Error('Request Could Not Be Processed!')
-      }
-      return response
-    })
-    .then(data => {
-      console.log('hey')
-    })
-    .catch(error => {
-      setError(error.message)
-      setTimeout(() => {
-        setError(null)
-       }, 1500)
-    })
-  }
 
   function ResetError(){
     setError(null)
@@ -191,26 +214,6 @@ function FavoriteTask(){
   
   return (
     <>
-    {error && (
-        <div className="mt-6 max-w-2xl mx-auto bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-md">
-          <p className="font-semibold">Error:</p>
-          <p>{error}</p>
-          <button
-          className="px-4 py-2 text-red-600 border border-red-600 rounded-md hover:bg-red-100"
-          onClick={ResetError}
-          >Close Error</button>
-        </div>
-       )}
-       {alert && (
-        <div className="mt-6 max-w-2xl mx-auto bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-md">
-          <p className="font-semibold">Alert:</p>
-          <p>{alert}</p>
-          <button
-          className="px-4 py-2 text-green-600 border border-green-600 rounded-md hover:bg-green-100"
-          onClick={ResetAlert}
-          >Close Alert</button>
-        </div>
-       )}
     {favoritetasksarray.length > 0 ? (<div className="h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-2xl p-8 bg-white rounded-2xl shadow-lg">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
@@ -222,8 +225,8 @@ function FavoriteTask(){
                 key={index}
                 className="p-4 bg-gray-100 rounded-lg flex justify-between items-center"
               >
-                <span className="text-gray-800 text-lg font-bold">{task.title}</span>
-                <button onClick={() => MoveTaskToTopFavoriteList(index)} className="px-4 py-2 bg-yellow-500 font-semibold rounded-md hover:bg-yellow-400 ml-32">Move To Top!</button>
+                <Link className="text-gray-800 text-lg font-bold" to='/tasks'>{task.title}</Link>
+                {task.completed ? <span className="text-green-500 font-bold rounded-md mr-64 ml-0">Completed!</span> : <span className="px-4 py-2 text-red-500 font-bold rounded-md mr-64 ml-0">Not Completed!</span>}
                 <button onClick={() => RemoveTaskFromFavorite(index)} className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">Remove!</button>
               </li>
             ))}
@@ -232,8 +235,10 @@ function FavoriteTask(){
       <div className="absolute top-20 left-0 p-4 flex space-x-2 h-24">
           <button onClick={SetAllFavorite} className="h-10 w-32 rounded-lg bg-blue-500 font-bold">All Favorite!</button>
           <button onClick={SetAllNonFavorite} className="h-10 w-32 rounded-lg bg-red-500 ml-2 font-bold" >Reset All!</button>
+          <span className="h-10 w-32 p-2 rounded-lg bg-yellow-500 mr-2 flex justify-center font-bold">{countcompleted}/{countpending}</span>
+          <span className="h-10 w-32 p-2 rounded-lg bg-yellow-500 mr-2 flex justify-center font-bold">{countlowpriority}/{countmediumpriority}/{counthighpriority}</span>
       {/* Completed Tasks */}
-      <div className="bg-green-100 border border-green-300 rounded-xl h-11 w-40 flex items-center justify-start shadow-md">
+      <div className="bg-green-100 border border-green-300 rounded-xl h-11 w-40 flex items-center justify-center shadow-md">
         <div className="flex items-center gap-2">
           <CheckCircle className="text-green-600" size={24} />
           <span className="text-lg font-medium text-green-800">Favorite:</span>
@@ -241,10 +246,10 @@ function FavoriteTask(){
         <span className="text-xl font-bold text-green-900 ml-1">{countfavorites}</span>
       </div>
       {/* Pending Tasks */}
-      <div className="bg-yellow-100 border border-yellow-300 rounded-xl h-11 w-40 flex items-center justify-start shadow-md">
+      <div className="bg-yellow-100 border border-yellow-300 rounded-xl h-11 w-40 flex items-center justify-center shadow-md">
         <div className="flex items-center gap-2">
           <Clock className="text-yellow-600" size={24} />
-          <span className="text-lg font-medium text-yellow-800">Not Favorited:</span>
+          <span className="text-lg font-medium text-yellow-800">Rest:</span>
         </div>
         <span className="text-xl font-bold text-yellow-900 ml-1">{countnotfavorites}</span>
         </div>

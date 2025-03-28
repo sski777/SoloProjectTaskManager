@@ -265,6 +265,26 @@ const TasksList = () => {
       }
     }
     setTaskList(tasksarray)
+    const newarraysee = []
+    for (let i = 0; i < tasksarray.length; i++){
+      let variable = tasksarray[i]
+      if (variable.priority==='high'){
+        newarraysee.push(variable)
+      }
+    }
+    for (let i = 0; i < tasksarray.length; i++){
+      let variable = tasksarray[i]
+      if (variable.priority==='medium'){
+        newarraysee.push(variable)
+      }
+    }
+    for (let i = 0; i < tasksarray.length; i++){
+      let variable = tasksarray[i]
+      if (variable.priority==='low'){
+        newarraysee.push(variable)
+      }
+    }
+    setTaskList(newarraysee)
   })
   .catch(error => {
     setError(error.message)
@@ -312,6 +332,7 @@ const TasksList = () => {
   .then(data => {
       setTaskList(data)
       setEditingId()
+      setInputFieldAppeared(null)
   })
   .catch(error => {
     setError(error.message)
@@ -730,6 +751,7 @@ const TasksList = () => {
     setTaskList(tasksarray)
     setEditingDate(false)
     setEditDateInput('')
+    setInputFieldAppeared(null)
   })
   .catch(error => {
     setError(error.message)
@@ -744,6 +766,7 @@ const TasksList = () => {
       setError(null)
      }, 1500)
     setEditingDate(false)
+    setInputFieldAppeared(null)
   }
  }
  
@@ -811,6 +834,7 @@ const TasksList = () => {
         setTaskList(data)
         setEditingDateDown(false)
         setEditDateDownInput('')
+        setInputFieldAppeared(null)
       })
       .catch(error => {
         setError(error.message)

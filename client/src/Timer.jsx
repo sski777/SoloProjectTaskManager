@@ -209,7 +209,7 @@ export default function PomodoroTimer() {
           <button onClick={SetAllCompletedId} className="h-10 w-32 rounded-lg bg-red-500 font-bold">All Completed!</button>
           <button className="h-10 w-32 rounded-lg bg-orange-500 ml-2 font-bold" onClick={SetAllPendingId}>All Pending!</button>
       {/* Completed Tasks */}
-      <div className="bg-green-100 border border-green-300 rounded-xl h-11 w-40 flex items-center justify-start shadow-md">
+      <div className="bg-green-100 border border-green-300 rounded-xl h-11 w-40 flex items-center justify-center shadow-md">
         <div className="flex items-center gap-2">
           <CheckCircle className="text-green-600" size={24} />
           <span className="text-lg font-medium text-green-800">Completed</span>
@@ -217,7 +217,7 @@ export default function PomodoroTimer() {
         <span className="text-xl font-bold text-green-900 ml-1">{completed}</span>
       </div>
       {/* Pending Tasks */}
-      <div className="bg-yellow-100 border border-yellow-300 rounded-xl h-11 w-40 flex items-center justify-start shadow-md">
+      <div className="bg-yellow-100 border border-yellow-300 rounded-xl h-11 w-40 flex items-center justify-center shadow-md">
         <div className="flex items-center gap-2">
           <Clock className="text-yellow-600" size={24} />
           <span className="text-lg font-medium text-yellow-800">Pending</span>

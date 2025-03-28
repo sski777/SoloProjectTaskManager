@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, data } from "react-router-dom"
 const ROOTURL = 'http://localhost:8080'
 function TaskId(){
   const { id } = useParams() // gets the id dynamically from the url
@@ -7,25 +7,6 @@ function TaskId(){
   let [user, setUser] = useState([])
   let [error, setError] = useState(null)
   let [alert, setAlert] = useState(null)
-
-  useEffect(() => {
-    const options = {
-      method: 'GET'
-    }
-   fetch(ROOTURL+'/tasks/:'+id.slice(1), options)
-   .then(response => {
-     if (!response.ok){
-       throw new Error('Task Does Not Exist!')
-     }
-     return response.json()
-   })
-   .then(data => {
-     setUser(data)
-   })
-   .catch(error => {
-     setError(error.message)
-   })
-  }, [])
   
   
   function SetTaskPriorityHigh(){
@@ -113,6 +94,33 @@ function TaskId(){
     setAlert(null)
   }
 
+  function toggleComplete(){
+    const gettask = user[0]
+    const statetoupdate = !gettask.completed
+    const title = gettask.title
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({tasktitle:title, state:statetoupdate})
+    }
+    fetch(ROOTURL+'/returnchanges/taskid', options)
+    .then(response => {
+      if (!response.ok){
+        throw new Error('Request Could Not Be Processed!')
+      }
+      return response
+    })
+    .then(data => {
+
+    })
+    .catch(error => {
+      setError(error.message)
+      setTimeout(() => {
+        setError(null)
+       }, 1500)
+    })
+  }
+
   useEffect(() => {
     const options = {
       method: 'GET'
@@ -129,27 +137,60 @@ function TaskId(){
    })
    .catch(error => {
      setError(error.message)
+     setTimeout(() => {
+      setError(null)
+     }, 1500)
    })
   })
 
   const tasklistsee = user.map((task, index) => <li key={index}>
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-5xl bg-white shadow-2xl rounded-2xl bg-white-500 p-12">
-        <h1 className="text-2xl font-bold text-center mb-4">Your Task Is: {task.title}</h1>
-        <div className="top-20">
-        {task.completed ? <span className="p-2 rounded-lg bg-green-500">Completed</span> : <span className="p-2 rounded-lg bg-red-500">Pending</span>}
-        {task.priority === 'high' && <span className="p-2 rounded-lg bg-red-500 ml-10">High</span>} {/* By Default The Text Color Is Black */}
-        {task.priority === 'medium' && <span className="p-2 rounded-lg bg-orange-500 ml-10">Medium</span>}
-        {task.priority === 'low' && <span className="p-2 rounded-lg bg-green-500 ml-10">Low</span>} { /* put each of these conditional statements in their own seperate divs and then space them */}
-        {Number(task.duedate) >= 0 && Number(task.duedate) <= 10 && <span className="p-2 rounded-lg bg-red-500 ml-10">Due Date: {task.duedate} Days</span>}
-        {Number(task.duedate) >= 11 && Number(task.duedate) <= 20 && <span className="p-2 rounded-lg bg-orange-500 ml-10">Due Date: {task.duedate} Days</span>}
-        {Number(task.duedate) >= 21 && <span className="p-2 rounded-lg bg-green-500 ml-10">Due Date: {task.duedate} Days</span>}
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="w-full max-w-3xl p-8 bg-white shadow-lg rounded-lg border">
+        <Link className="text-3xl font-semibold mb-14" to='/tasks'>Your Task Is: {task.title}</Link>
+
+        <div className="flex items-center justify-between mb-6">
+          <span
+            className={`px-4 py-2 text-lg font-semibold mt-8 rounded-full ${
+              task.priority === "high"
+                ? "bg-red-500 text-white"
+                : task.priority === "medium"
+                ? "bg-yellow-400 text-white"
+                : "bg-blue-400 text-white"
+            }`}
+          >
+            {task.priority}
+          </span>
+          <span
+            className={`px-4 py-2 text-lg mr-64 font-semibold mt-8 rounded-full ${
+              task.completed === true
+                ? "bg-yellow-500 text-white"
+                : task.completed === false
+                ? "bg-red-500 text-white"
+                : "bg-blue-400 text-white"
+            }`}
+          >
+            {task.completed ? <p>Completed!</p> : <p>Not Completed!</p>}
+          </span>
+          <p className="text-lg text-gray-600 font-bold">
+            Due: {task.duedate} Days
+          </p>
         </div>
-      </div>
-      <div className="mt-5">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={SetTaskPriorityHigh}>Set High</button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded ml-10" onClick={SetTaskPriorityMedium}>Set Medium</button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded ml-10" onClick={SetTaskPriorityLow}>Set Low</button>
+
+        <div className="flex items-center space-x-4">
+          {task.completed ? <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={toggleComplete}
+            className="h-6 w-6 cursor-pointer"
+          /> : <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={toggleComplete}
+            className="h-6 w-6 cursor-pointer"/>}
+          <span className={`text-2xl ${task.completed ? "line-through text-gray-500" : ""}`}>
+            {task.completed ? "Completed" : "Mark as Complete"}
+          </span>
+        </div>
       </div>
     </div>
   </li>)
