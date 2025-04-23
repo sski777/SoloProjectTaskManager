@@ -46,43 +46,18 @@ route.post('/', async (req, res) => {
   }
 })
 
-route.get('/:id', async (req, res) => {
+route.post('/updatedynamic', async (req, res) => {
   try{
-    const id = Number(req.params.id.slice(1))
-    const database = await pool.query('SELECT * FROM tasks')
-    const everything = database.rows
-    const tasksarray = []
-      for (let i = 0; i < everything.length; i++){
-        let variable = everything[i]
-        if (variable.priority==='high'){
-          tasksarray.push(variable)
-        }
-      }
-      for (let i = 0; i < everything.length; i++){
-        let variable = everything[i]
-        if (variable.priority==='medium'){
-          tasksarray.push(variable)
-        }
-      }
-      for (let i = 0; i < everything.length; i++){
-        let variable = everything[i]
-        if (variable.priority==='low'){
-          tasksarray.push(variable)
-        }
-      }
-    if (id===0){
-      return res.status(200).json([tasksarray[id]])
-    }
-    else{
-      let gettask = tasksarray[id]
-      console.log(gettask)
-      if (gettask===undefined){ // task does not exist
-        return res.status(400).json({error:'Task Does Not Exist!'})
-      }
-      else{
-        return res.status(200).json([gettask])
+    const title = req.body.tasktitle
+    const table = await pool.query('SELECT * FROM tasks')
+    const task = []
+    for (let i = 0; i < table.rows.length; i++){
+      let variable = table.rows[i]
+      if (variable.title===title){
+        task.push(variable)
       }
     }
+    res.status(200).json(task)
   }
   catch(error){
     res.status(400).json({error:error.message})

@@ -1,12 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Bookmark, Clock, CheckCircle } from "lucide-react";
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 const ROOTURL = 'http://localhost:8080'
 function FavoriteTask(){
   let [favoritetasksarray, setFavoriteTasksArray] = useState([])
+  let [filtertaskarray, setFilterTasksArray] = useState([])
   let [error, setError] = useState(null)
   let [countfavorites, setCountFavorites] = useState(0)
   let [countnotfavorites, setCountNotFavorites] = useState(0)
@@ -16,6 +17,7 @@ function FavoriteTask(){
   let [countlowpriority, setLowPriority] = useState(0)
   let [countmediumpriority, setCountMediumPriority] = useState(0)
   let [counthighpriority, setCountPriorityHigh] = useState(0)
+  
 
   useEffect(() => {
     const options = {
@@ -208,19 +210,20 @@ function FavoriteTask(){
     setError(null)
   }
   
-  function ResetAlert(){
-    setAlert(null)
-  }
+  useEffect(() => {
+    const filterarray = favoritetasksarray.filter(task => !task.hidden)
+    setFilterTasksArray(filterarray)
+  }, [favoritetasksarray])
   
   return (
     <>
-    {favoritetasksarray.length > 0 ? (<div className="h-screen flex items-center justify-center bg-gray-50">
+    {favoritetasksarray.length > 0 ? (<div className="h-screen flex items-center justify-center bg-gray-300">
       <div className="w-full max-w-2xl p-8 bg-white rounded-2xl shadow-lg">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
           Favorite Tasks:
         </h2>
           <ul className="space-y-4">
-            {favoritetasksarray.map((task, index) => (
+            {filtertaskarray.map((task, index) => (
               <li
                 key={index}
                 className="p-4 bg-gray-100 rounded-lg flex justify-between items-center"

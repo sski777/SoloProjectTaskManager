@@ -1,9 +1,27 @@
 import { useState, useEffect } from "react"
-import { useParams, Link, data } from "react-router-dom"
+import { useParams, Link, useLocation, Navigate } from "react-router-dom"
 const ROOTURL = 'http://localhost:8080'
 function TaskId(){
   const { id } = useParams() // gets the id dynamically from the url
-  console.log(id)
+  let [taskhidden, setTaskHidden] = useState(null)
+  const checkstring = '0123456789'
+  const semi = ':'
+  if (id[0]!=semi&&checkstring.includes(id[1])==false){
+    return <Navigate to='*'></Navigate>
+  }
+  else if (id[0]===semi&&checkstring.includes(id[1])==false){
+    return <Navigate to='*'></Navigate>
+  }
+  else if (id[0]!=semi&&checkstring.includes(id[1])){
+    return <Navigate to='*'></Navigate>
+  }
+  const location = useLocation()
+  const stateobject = location.state
+  if(!stateobject){
+    return <Navigate to='*'></Navigate>
+  }
+  const title = stateobject.title
+  //const wheretostart = idsee.slice(1)
   let [user, setUser] = useState([])
   let [error, setError] = useState(null)
   let [alert, setAlert] = useState(null)
@@ -94,10 +112,39 @@ function TaskId(){
     setAlert(null)
   }
 
+  function ToggleFavorite(){
+    const gettask = user[0]
+    console.log(gettask)
+    const tasktitle = gettask.title
+    const hiddenstate = !taskhidden
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({tasktitle:tasktitle,hiddenstate:hiddenstate})
+    }
+    fetch(ROOTURL+'/updatefavorite', options)
+    .then(response => {
+      if (!response.ok){
+        throw new Error('Request Could Not Be Processed!')
+      }
+      return response.json()
+    })
+    .then(data => {
+
+    })
+    .catch(error => {
+      setError(error.message)
+      setTimeout(() => {
+        setError(null)
+       }, 1500)
+    })
+  }
+
   function toggleComplete(){
     const gettask = user[0]
     const statetoupdate = !gettask.completed
     const title = gettask.title
+    console.log(title)
     const options = {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
@@ -111,7 +158,6 @@ function TaskId(){
       return response
     })
     .then(data => {
-
     })
     .catch(error => {
       setError(error.message)
@@ -123,9 +169,11 @@ function TaskId(){
 
   useEffect(() => {
     const options = {
-      method: 'GET'
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({tasktitle:title})
     }
-   fetch(ROOTURL+'/tasks/:'+id.slice(1), options)
+   fetch(ROOTURL+'/tasks/updatedynamic', options)
    .then(response => {
      if (!response.ok){
        throw new Error('Task Does Not Exist!')
@@ -134,6 +182,7 @@ function TaskId(){
    })
    .then(data => {
      setUser(data)
+     setTaskHidden(data[0].hidden)
    })
    .catch(error => {
      setError(error.message)
@@ -186,9 +235,13 @@ function TaskId(){
             type="checkbox"
             checked={task.completed}
             onChange={toggleComplete}
-            className="h-6 w-6 cursor-pointer"/>}
+            className="h-6 w-6 ml-5 cursor-pointer"/>}
           <span className={`text-2xl ${task.completed ? "line-through text-gray-500" : ""}`}>
             {task.completed ? "Completed" : "Mark as Complete"}
+          </span>
+          {task.favorite ? <input type='checkbox' className="h-6 w-6 cursor-pointer" checked={task.hidden} onChange={ToggleFavorite}></input> : <input type="checkbox" checked={task.hidden} className="h-6 w-6 cursor-pointer" onClick={ToggleFavorite}></input>}
+          <span className={`text-2xl ${task.hidden ? "font-bold text-green-500" : "font-bold text-red-500"}`}>
+            {task.hidden ? "Hidden" : "Not Hidden"}
           </span>
         </div>
       </div>

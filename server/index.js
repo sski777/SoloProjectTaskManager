@@ -15,6 +15,10 @@ import RouteChangeStateId from './Routes/ChangeStateId.js';
 import RouteSetFavoriteState from './Routes/SetFavoriteState.js';
 import RouteReverseChanges from './Routes/ReturnChanges.js';
 import RouteSetAllFavorites from './Routes/SetAllFavorites.js';
+import RouteUpdateFavorite from './Routes/UpdateFavorite.js';
+import RouteChangeSetCategory from './Routes/SetChangeCategory.js';
+import RouteChangeHiddenState from './Routes/ChangeHiddenState.js';
+import RouteChangeEmail from './Routes/AddEmail.js';
 const server = express();
 
 
@@ -50,6 +54,14 @@ server.use('/changefavorite', RouteSetFavoriteState)
 server.use('/returnchanges', RouteReverseChanges)
 
 server.use('/setallfavorites', RouteSetAllFavorites)
+
+server.use('/updatefavorite', RouteUpdateFavorite)
+
+server.use('/changecategory', RouteChangeSetCategory)
+
+server.use('/changehidden', RouteChangeHiddenState)
+
+server.use('/addemail', RouteChangeEmail)
 
 server.use((err, req, res, next) => {
   console.error('Unhandled Error:', err);

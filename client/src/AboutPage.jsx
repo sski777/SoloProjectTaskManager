@@ -22,7 +22,7 @@ export default function AboutPage() {
       </div>
     </div>
     <div>
-        <Link to='/tasks' className="inline-block px-6 py-3 bg-yellow-500 text-black font-bold text-xl hover:bg-yellow-400 transition-all duration-300 flex justify-center">Task Manager!</Link>
+        <Link to='/email' className="inline-block px-6 py-3 bg-blue-500 text-black font-bold text-xl hover:bg-blue-400 transition-all duration-300 flex justify-center">Submit Email!</Link>
     </div>
     </div>
   );

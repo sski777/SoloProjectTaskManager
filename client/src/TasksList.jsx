@@ -13,6 +13,7 @@ const TasksList = () => {
  
  let [task, setTask] = useState('')
  let [taskslist, setTaskList] = useState([])
+ let [filtertaskarray, setFilterTasksArray] = useState([])
  let [error, setError] = useState(null) // by default a error does not exist
  let [completed, setCompleted] = useState(false)
  let [editingId, setEditingId] = useState()
@@ -45,9 +46,11 @@ const TasksList = () => {
 
 
  function HandleSubmit(){
-   if (task!=''){
+   let newarray = task.split('')
+   let newset = new Set(newarray)
+   if (task!=''&&newset.size!=1&&newset.has(' ')==true){
     const wordsarray = []
-    const checkstring = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?.,'
+    const checkstring = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?.,'
     for (let i = 0; i < task.length; i++){
       let variable = task[i]
       let nextvariable = task[i+1]
@@ -118,6 +121,7 @@ const TasksList = () => {
       setTimeout(() => {
         setError(null)
        }, 1500)
+      setTask('')
      }
 }
 
@@ -312,6 +316,17 @@ const TasksList = () => {
  async function handleSubmitEdit(){
   if(editingId === undefined) {
     return
+  }
+  const checkcount = 0
+  const checkstring = '0123456789'
+  if (checkstring.includes(edittaskinput[0])){
+      setEditingId()
+      setError('Cannot Have Numbers In Task!')
+      setTimeout(() => {
+      setError(null)
+     }, 1500)
+     setInputFieldAppeared(null)
+     return
   }
   if (edittaskinput!=''){
     let updatedtask = edittaskinput
@@ -766,6 +781,7 @@ const TasksList = () => {
       setError(null)
      }, 1500)
     setEditingDate(false)
+    setEditDateInput('')
     setInputFieldAppeared(null)
   }
  }
@@ -1300,14 +1316,19 @@ const TasksList = () => {
   })
  }, [])
 
+ useEffect(() => {
+   const filterarray = taskslist.filter(task => !task.hidden)
+   setFilterTasksArray(filterarray)
+ }, [taskslist])
+
 // upon mapping in the conditonal render statement either make the task appear completed or not
- const tasklistsee = taskslist.map((task, index) => <li key={index}>
- <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-lg transition-shadow">
+ const tasklistsee = filtertaskarray.map((task, index) => <li key={index}>
+ <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-lg transition-shadow">      
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <span className="text-gray-800 font-medium">{task.completed 
-              ? <Link className="text-2xl line-through text-gray-500" to={'/tasks/:'+index}>{task.title}</Link>
-              : <Link to={'/tasks/:'+index} className="font-bold">{task.title}</Link>
+              ? <Link className="text-2xl line-through text-gray-500" to={'/tasks/:'+index} state={{title:filtertaskarray[index].title, favorite:filtertaskarray[index].favorite}}>{task.title}</Link>
+              : <Link to={'/tasks/:'+index} className="font-bold" state={{title:filtertaskarray[index].title, favorite:filtertaskarray[index].favorite}}>{task.title}</Link>
                 }</span>
               {task.priority === 'high' ? <span className="p-2 rounded-lg bg-red-500 font-bold">High</span> : <span></span>}
               {task.priority === 'medium' ? <span className="p-2 rounded-lg bg-orange-500 font-bold">Medium</span> : <span></span>}
@@ -1362,7 +1383,7 @@ const TasksList = () => {
  </li>)
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-300 p-6">
       {/* Page Title */}
       <div className="mb-6 text-center">
         <h1 className="text-4xl font-bold text-gray-800">Your Tasks</h1>
@@ -1380,15 +1401,6 @@ const TasksList = () => {
       </div>
 
       {/* Task Management Section */}
-      <div className="flex justify-end mb-4 absolute bottom-7 right-0 mr-6">
-          {numberlowpriority != null && numbermediumpriority != null && numberhighpriority != null && <span className="p-2 rounded-lg bg-yellow-500 mr-2">{numberlowpriority}/{numbermediumpriority}/{numberhighpriority}</span>}
-          {percentagecompleted != null && percentagenotcompleted != null && <span className="p-2 rounded-lg bg-yellow-500 mr-2">{percentagecompleted}/{percentagenotcompleted}</span>}
-          <button onClick={SetAllCompleted} className="p-2 rounded-lg bg-green-500">All Completed</button>
-          <button onClick={SetAllPending} className="p-2 rounded-lg bg-red-500 ml-2">All Pending</button>
-          <button onClick={HandleDeleteAll} className="p-2 rounded-lg bg-red-500 ml-2">Delete All</button>
-          <button onClick={HandleReturnPreviousChanges} className="p-2 rounded-lg bg-blue-500 ml-2">Undo Changes!🪄</button>
-          <button onClick={HandleReverseAllTasks} className="p-2 rounded-lg bg-purple-500 ml-2">Reverse All Tasks!🔮</button>
-      </div>
       <div className="mb-6 flex justify-between items-center">
         <div className="flex justify-start">
         <input
@@ -1502,6 +1514,15 @@ const TasksList = () => {
         </div>
        )}
        <ol>{tasklistsee}</ol>
+       <div className="w-full flex justify-end p-4 mt-6 mr-6">
+          {numberlowpriority != null && numbermediumpriority != null && numberhighpriority != null && <span className="p-2 rounded-lg bg-yellow-500 mr-2">{numberlowpriority}/{numbermediumpriority}/{numberhighpriority}</span>}
+          {percentagecompleted != null && percentagenotcompleted != null && <span className="p-2 rounded-lg bg-yellow-500 mr-2">{percentagecompleted}/{percentagenotcompleted}</span>}
+          <button onClick={SetAllCompleted} className="p-2 rounded-lg bg-green-500">All Completed</button>
+          <button onClick={SetAllPending} className="p-2 rounded-lg bg-red-500 ml-2">All Pending</button>
+          <button onClick={HandleDeleteAll} className="p-2 rounded-lg bg-red-500 ml-2">Delete All</button>
+          <button onClick={HandleReturnPreviousChanges} className="p-2 rounded-lg bg-blue-500 ml-2">Undo Changes!🪄</button>
+          <button onClick={HandleReverseAllTasks} className="p-2 rounded-lg bg-purple-500 ml-2">Reverse All Tasks!🔮</button>
+      </div>
     </div>
   );
 };
