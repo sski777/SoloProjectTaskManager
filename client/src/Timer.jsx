@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom'
 import { CheckCircle, Clock } from "lucide-react";
-const ROOTURL = 'http://localhost:8080'
+const ROOTURL = 'https://soloproject1.onrender.com'
 export default function PomodoroTimer() {
   let [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes
   let [isRunning, setIsRunning] = useState(false);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-const ROOTURL = 'http://localhost:8080'
+const ROOTURL = 'https://soloproject1.onrender.com'
 export default function EmailCapture() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);

@@ -4,7 +4,7 @@ import { Bookmark, Clock, CheckCircle } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 
-const ROOTURL = 'http://localhost:8080'
+const ROOTURL = 'https://soloproject1.onrender.com'
 function FavoriteTask(){
   let [favoritetasksarray, setFavoriteTasksArray] = useState([])
   let [filtertaskarray, setFilterTasksArray] = useState([])

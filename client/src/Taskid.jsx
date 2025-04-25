@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams, Link, useLocation, Navigate } from "react-router-dom"
-const ROOTURL = 'http://localhost:8080'
+const ROOTURL = 'https://soloproject1.onrender.com'
 function TaskId(){
   const { id } = useParams() // gets the id dynamically from the url
   let [taskhidden, setTaskHidden] = useState(null)

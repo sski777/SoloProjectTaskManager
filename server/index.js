@@ -68,6 +68,8 @@ server.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-server.listen(8080, () => {
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
   console.log('The Server Is Running!')
 })

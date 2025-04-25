@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { data, Link } from "react-router-dom";
 import { Bookmark } from "lucide-react";
-const ROOTURL = 'http://localhost:8080'
+const ROOTURL = 'https://soloproject1.onrender.com'
 function TaskCategory(){
 
   let [taskslist, setTasksList] = useState([])
