@@ -24,7 +24,7 @@ import RouteChangeEmail from './Routes/AddEmail.js';
 const server = express();
 
 
-const allowedOrigins = ['https://flowmate-drab.vercel.app/'];
+const allowedOrigins = ['https://flowmate-drab.vercel.app', 'http://localhost:3000'];
 
 const limiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
