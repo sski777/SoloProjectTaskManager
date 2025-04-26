@@ -7,7 +7,14 @@ const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false, // Use SSL in production
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: false } // Neon requires SSL in production
+    : false,
 });
+
+// Optional: test connection once at startup
+pool.connect()
+  .then(() => console.log('✅ Connected to PostgreSQL!'))
+  .catch((err) => console.error('❌ Database connection error:', err));
 
 export default pool;
