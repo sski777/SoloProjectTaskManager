@@ -22,4 +22,4 @@ _(Note: it’s on a free-tier server, so it might take a few seconds to wake up)
 **Frontend:** React, Tailwind CSS, Auth0  
 **Backend:** Node.js, Express.js  
 **Database:** PostgreSQL, Prisma ORM  
-**Deploy:** Vercel
+**Deploy:** Vercel, Render
