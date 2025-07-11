@@ -1,26 +1,25 @@
-# 🧠 FlowMate — Productivity & Task Management App
+# 🧠 FlowMate — Pomodoro & Task Manager App
 
-**FlowMate** is a full-stack productivity app designed to help users stay focused and organized through **Pomodoro-timed work sessions** and a **task manager**.
+FlowMate is a productivity app I built to combine a clean task manager with a Pomodoro-style focus timer. It’s built full-stack using React, Node, and PostgreSQL, and includes secure login with Auth0.
 
-🟢 **Live Demo:**  
-👉 [https://flowmate-drab.vercel.app/](https://flowmate-drab.vercel.app/)  
-_(Free-tier hosting — may take a few seconds to wake up)_
-
----
-
-## 🔑 Key Features
-
-- ⏱ **Pomodoro Timer** for structured work/break cycles  
-- ✅ **Task Management** — Add, update, and track tasks  
-- 🔐 **Secure Auth** with Auth0 (user-specific data)  
-- 📱 **Responsive UI** built with Tailwind CSS
+🟢 **Live demo:**  
+👉 https://flowmate-drab.vercel.app/  
+_(Note: it’s on a free-tier server, so it might take a few seconds to wake up)_
 
 ---
 
-## 🛠 Tech Stack
+## 🔑 Main Features
 
-- **Frontend:** React, Tailwind CSS  
-- **Backend:** Node.js, Express.js  
-- **Database:** PostgreSQL, Prisma ORM  
-- **Auth:** Auth0  
-- **Hosting:** Vercel, Render
+- ⏱ Pomodoro timer with automatic break cycles  
+- ✅ Task manager with create/update/delete and checkbox tracking  
+- 🔐 Auth0 login so each user sees only their tasks  
+- 🌙 Responsive UI with Tailwind CSS — works on mobile & desktop
+
+---
+
+## 🧰 Tech Stack
+
+**Frontend:** React, Tailwind CSS, Auth0  
+**Backend:** Node.js, Express.js  
+**Database:** PostgreSQL, Prisma ORM  
+**Deploy:** Vercel
